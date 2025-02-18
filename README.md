@@ -147,6 +147,6 @@ ros2 launch turtlebot3_bringup robot.launch.py
 
 ## Author
 
-Poommipat Wattanaprasit (640610682)
-Department of Robotics Engineering and AI
-Chiang Mai University
+Poommipat Wattanaprasit (640610682)  
+Department of Robotics Engineering and AI  
+Chiang Mai University  
