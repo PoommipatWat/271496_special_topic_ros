@@ -26,6 +26,7 @@ setup(
         'console_scripts': [
             'lidar_data_converter = robot_control.lidar_data_converter:main',
             'motion_controller = robot_control.motion_controller:main',
+            'obstacle_detector = robot_control.obstacle_detector:main',
         ],
     },
 )

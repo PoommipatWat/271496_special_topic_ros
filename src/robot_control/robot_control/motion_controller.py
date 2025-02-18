@@ -8,17 +8,17 @@ from lidar_msg.srv import StopRobot
 
 import numpy as np
 
-class motion_controller(Node):
+class MotionControl(Node):
     def __init__(self):
         super().__init__('motion_controller')
 
-        self.subscription = self.create_subscription(
+        self.lidar_subscription = self.create_subscription(
             LidarData,
             'lidar_data/a3',
             self.lidar_data_callback,
             10
         )
-        self.subscription
+        self.lidar_subscription
 
         self.cmd_vel_publisher = self.create_publisher(
             Twist,
@@ -38,12 +38,12 @@ class motion_controller(Node):
         self.MIN_LIDAR_DIATANCE = 0.20
         self.MAX_LIDAR_DISTANCE = 0.40
 
-        self.is_stopped = False
+        self.obstable_detected = False
         
         self.get_logger().info('Motion controller node is running')
 
     def stop_robot_callback(self, request, response):
-        self.is_stopped = request.stop
+        self.obstable_detected = request.stop
         response.success = True
         return response
     
@@ -53,7 +53,7 @@ class motion_controller(Node):
         distances = np.array([point.distance for point in msg.scan_points])
         angles = np.array([point.angle for point in msg.scan_points])
         
-        if not self.is_stopped:
+        if not self.obstable_detected:
             min_distance = np.min(distances) if len(distances) > 0 else float('inf')
             min_angle = angles[np.argmin(distances)] if len(distances) > 0 else 0
             
@@ -67,7 +67,7 @@ class motion_controller(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    controller = motion_controller()
+    controller = MotionControl()
     rclpy.spin(controller)
     controller.destroy_node()
     rclpy.shutdown()
