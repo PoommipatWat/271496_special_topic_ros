@@ -1,0 +1,1 @@
+LidarPoint[] scan_points
