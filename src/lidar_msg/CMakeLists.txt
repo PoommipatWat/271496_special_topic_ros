@@ -16,6 +16,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/LidarPoint.msg"
   "msg/LidarData.msg"
+  "srv/StopRobot.srv"
 )
 
 if(BUILD_TESTING)

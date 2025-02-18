@@ -1,0 +1,5 @@
+# Request
+bool stop     # true = stop, false = resume
+---
+# Response
+bool success
