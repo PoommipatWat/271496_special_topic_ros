@@ -31,7 +31,7 @@ class ObstacleDetector(Node):
         while not self.stop_robot_client.wait_for_service(timeout_sec=1.0):
             self.get_logger().warn('service not available, waiting again...')
 
-        self.get_logger().info('Motion controller node is running')
+        self.get_logger().info('Obstable Detector node has been started')
 
     def lidar_data_callback(self, msg):
         distances = np.array([point.distance for point in msg.scan_points])

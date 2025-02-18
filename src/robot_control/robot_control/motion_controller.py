@@ -40,7 +40,7 @@ class MotionControl(Node):
 
         self.obstable_detected = False
         
-        self.get_logger().info('Motion controller node is running')
+        self.get_logger().info('Motion controller node has been started')
 
     def stop_robot_callback(self, request, response):
         self.obstable_detected = request.stop
