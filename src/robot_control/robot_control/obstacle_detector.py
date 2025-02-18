@@ -16,6 +16,7 @@ class ObstacleDetector(Node):
         self.prev_obstacle_detected_status = False
 
         self.OBSTACLE_DISTANCE = 0.15
+        self.NUMBER_OF_NEAR_ZONES = 2
 
         self.lidar_subscription = self.create_subscription(
             LidarData,
@@ -42,9 +43,12 @@ class ObstacleDetector(Node):
 
     def get_adjacent_zones(self, zones):
         zones = np.array(zones)
-        prev_zones = (zones - 1) % 8
-        next_zones = (zones + 1) % 8
-        all_zones = np.unique(np.concatenate([prev_zones, zones, next_zones]))
+
+        prev_zones = [(zones - i) % 8 for i in range(1, self.NUMBER_OF_NEAR_ZONES + 1)]
+        next_zones = [(zones + i) % 8 for i in range(1, self.NUMBER_OF_NEAR_ZONES + 1)]
+        
+        all_zones_arrays = prev_zones + [zones] + next_zones
+        all_zones = np.unique(np.concatenate(all_zones_arrays))
         return all_zones
 
     def check_state_changed(self):
