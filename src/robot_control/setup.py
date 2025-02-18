@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'lidar_data_converter = robot_control.lidar_data_converter:main',
+            'motion_controller = robot_control.motion_controller:main',
         ],
     },
 )
