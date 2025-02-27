@@ -18,18 +18,15 @@ def generate_launch_description():
        Node(
            package='robot_control',
            executable='lidar_data_converter',
-           remappings=[
-                ('/scan', '/scan/turtlebot3') #remap /scan to /scan/turtlebot3
-            ]
        ),
-       Node(
-           package='robot_control',
-           executable='motion_controller'
-       ),
-       Node(
-           package='robot_control',
-           executable='obstacle_detector'
-       )
+    #    Node(
+    #        package='robot_control',
+    #        executable='motion_controller'
+    #    ),
+    #    Node(
+    #        package='robot_control',
+    #        executable='obstacle_detector'
+    #    )
    ])
 
    # Lidar Group with SetRemap

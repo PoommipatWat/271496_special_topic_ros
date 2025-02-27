@@ -5,7 +5,7 @@ from geometry_msgs.msg import Twist
 
 from lidar_msg.msg import LidarData, LidarPoint
 from lidar_msg.srv import StopRobot
-
+import matplotlib.pyplot as plt
 import numpy as np
 
 class MotionControl(Node):
@@ -17,8 +17,6 @@ class MotionControl(Node):
 
         self.MIN_LIDAR_DISTANCE = 0.20
         self.MAX_LIDAR_DISTANCE = 0.40
-
-        self.obstable_detected = False
 
         self.zone_access = np.ones(8, dtype=bool)
 
@@ -41,24 +39,29 @@ class MotionControl(Node):
             'stop_robot', 
             self.stop_robot_callback
         )
+       
+        # ตั้งค่า matplotlib แบบ non-blocking
+        plt.ion()  # เปิดโหมด interactive
+        self.fig, self.ax = plt.subplots(figsize=(6, 6))
+        plt.tight_layout()
         
+        # สร้าง timer สำหรับการอัปเดตการแสดงผล
+        self.timer = self.create_timer(0.01, self.update_visualization)
+
         self.get_logger().info('Motion controller node has been started')
 
     def stop_robot_callback(self, request, response):
-        self.obstable_detected = request.stop
         self.zone_access = np.array(request.zone_access)
         response.success = True
         return response
     
     def get_zones(self, angles):
-        angles = np.mod(angles, 360)
-        return (angles // 45).astype(int)
+        angles = np.mod(angles, np.pi*2)
+        return (angles // (np.pi*45/180)).astype(int)
 
     def check_angle_access(self, angles):
         zone = self.get_zones(angles)
-        if self.zone_access[zone]:
-            return True
-        return False
+        return  self.zone_access[zone]
     
     def lidar_data_callback(self, msg):
         cmd_vel = Twist()
@@ -73,10 +76,64 @@ class MotionControl(Node):
             if self.MIN_LIDAR_DISTANCE <= min_distance <= self.MAX_LIDAR_DISTANCE:
                 speed_factor = (self.MAX_LIDAR_DISTANCE - min_distance) / (self.MAX_LIDAR_DISTANCE - self.MIN_LIDAR_DISTANCE)
 
-                cmd_vel.linear.x = speed_factor * np.cos(min_angle) * self.MAX_LINEAR_SPEED
+                cmd_vel.linear.x = -1 * speed_factor * np.cos(min_angle) * self.MAX_LINEAR_SPEED
                 cmd_vel.angular.z = -1 * speed_factor * np.sin(min_angle) * self.MAX_ANGULAR_SPEED
 
         self.cmd_vel_publisher.publish(cmd_vel)
+
+    def update_visualization(self):
+        """อัปเดตการแสดงผลแบบไม่บล็อกการทำงาน"""
+        # เคลียร์กราฟเก่า
+        self.ax.clear()
+        
+        # จำนวนโซน
+        n = len(self.zone_access)
+        
+        # ขนาดของแต่ละส่วนเท่ากันหมด
+        sizes = [1] * n
+        
+        # กำหนดสี (เขียว = True, แดง = False)
+        colors = ['green' if val else 'red' for val in self.zone_access]
+        
+        # สร้างแผนภูมิวงกลม
+        self.ax.pie(sizes, colors=colors, wedgeprops=dict(width=1, edgecolor='black'), startangle=90)
+        
+        # วาดเส้นแบ่งส่วน
+        radius = 1
+        
+        # วาดเส้นแนวนอนและแนวตั้งผ่านจุดศูนย์กลาง
+        self.ax.axhline(y=0, color='black')
+        self.ax.axvline(x=0, color='black')
+        
+        # วาดเส้นทแยงมุม
+        self.ax.plot([-radius/np.sqrt(2), radius/np.sqrt(2)], [-radius/np.sqrt(2), radius/np.sqrt(2)], 'k-')
+        self.ax.plot([-radius/np.sqrt(2), radius/np.sqrt(2)], [radius/np.sqrt(2), -radius/np.sqrt(2)], 'k-')
+        
+        # วาดเส้นขอบวงกลม
+        circle = plt.Circle((0, 0), radius, fill=False, color='black')
+        self.ax.add_patch(circle)
+        
+        zone_angles = range(0,45*8,45)  # องศาของแต่ละโซน
+        
+        for i in range(n):
+            angle_rad = (112.5 + zone_angles[i]) * (np.pi / 180)
+            x = 0.7 * np.cos(angle_rad)
+            y = 0.7 * np.sin(angle_rad)
+            self.ax.text(x, y, str(i), fontsize=12, ha='center', va='center')
+
+        # ตั้งค่าอัตราส่วนให้เท่ากัน
+        self.ax.set_aspect('equal')
+        
+        # ลบแกน
+        self.ax.axis('off')
+        
+        # ตั้งชื่อ
+        self.ax.set_title("Zone Access Status")
+        
+        # อัปเดตกราฟแบบไม่บล็อก
+        self.fig.canvas.draw_idle()
+        self.fig.canvas.flush_events()
+
 
 def main(args=None):
     rclpy.init(args=args)

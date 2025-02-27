@@ -20,7 +20,7 @@ class LidarDataConverter(Node):
         
         self.subscription_turtlebot = self.create_subscription(
             LaserScan,
-            'scan/turtlebot3',
+            'scan',
             self.scan_turtlebot_callback,
             qos
         )
