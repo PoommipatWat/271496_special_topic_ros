@@ -10,7 +10,7 @@ def generate_launch_description():
    sllidar_launch_path = os.path.join(
        get_package_share_directory('sllidar_ros2'),
        'launch',
-       'sllidar_a1_launch.py'
+       'sllidar_a3_launch.py'
    )
 
    # Robot Control Group
