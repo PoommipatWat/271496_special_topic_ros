@@ -7,12 +7,12 @@ import numpy as np
 
 class ObstacleDetector(Node):
     def __init__(self):
-        super().__init__('motion_collision')
+        super().__init__('obstable_detector')
 
         self.zone_access = np.ones(8, dtype=bool)
         self.prev_zone_access = np.ones(8, dtype=bool)
 
-        self.OBSTACLE_DISTANCE = 0.20
+        self.OBSTACLE_DISTANCE = 0.18
         self.NUMBER_OF_NEAR_ZONES = 0
 
         

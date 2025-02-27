@@ -10,7 +10,7 @@ def generate_launch_description():
    sllidar_launch_path = os.path.join(
        get_package_share_directory('sllidar_ros2'),
        'launch',
-       'sllidar_a3_launch.py'
+       'sllidar_a1_launch.py'
    )
 
    # Robot Control Group
@@ -19,14 +19,14 @@ def generate_launch_description():
            package='robot_control',
            executable='lidar_data_converter',
        ),
-    #    Node(
-    #        package='robot_control',
-    #        executable='motion_controller'
-    #    ),
-    #    Node(
-    #        package='robot_control',
-    #        executable='obstacle_detector'
-    #    )
+       Node(
+           package='robot_control',
+           executable='motion_controller'
+       ),
+       Node(
+           package='robot_control',
+           executable='obstacle_detector'
+       )
    ])
 
    # Lidar Group with SetRemap

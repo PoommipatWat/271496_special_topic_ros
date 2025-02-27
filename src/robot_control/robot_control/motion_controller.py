@@ -13,7 +13,7 @@ class MotionControl(Node):
         super().__init__('motion_controller')
 
         self.MAX_LINEAR_SPEED = 0.2     # max linear speed of turtlebot3 burger
-        self.MAX_ANGULAR_SPEED = 2.8    # max angular speed of turtlebot3 burger
+        self.MAX_ANGULAR_SPEED = 1    # max angular speed of turtlebot3 burger
 
         self.MIN_LIDAR_DISTANCE = 0.20
         self.MAX_LIDAR_DISTANCE = 0.40
@@ -76,7 +76,7 @@ class MotionControl(Node):
             if self.MIN_LIDAR_DISTANCE <= min_distance <= self.MAX_LIDAR_DISTANCE:
                 speed_factor = (self.MAX_LIDAR_DISTANCE - min_distance) / (self.MAX_LIDAR_DISTANCE - self.MIN_LIDAR_DISTANCE)
 
-                cmd_vel.linear.x = -1 * speed_factor * np.cos(min_angle) * self.MAX_LINEAR_SPEED
+                cmd_vel.linear.x = 1 * speed_factor * np.cos(min_angle) * self.MAX_LINEAR_SPEED
                 cmd_vel.angular.z = -1 * speed_factor * np.sin(min_angle) * self.MAX_ANGULAR_SPEED
 
         self.cmd_vel_publisher.publish(cmd_vel)
