@@ -143,7 +143,9 @@ ros2 launch turtlebot3_bringup robot.launch.py
   # Response
   bool success  # true if command was successful
   ```
-
+<p align="center">
+ <img src="zone_access.png" alt="Zone Access Diagram">
+</p>
 ## Author
 
 Poommipat Wattanaprasit (640610682)  
