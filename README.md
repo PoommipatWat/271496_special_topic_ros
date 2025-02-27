@@ -131,10 +131,9 @@ ros2 launch turtlebot3_bringup robot.launch.py
 - `/stop_robot`: Control robot movement and zone access
   ```
   # Request
-  bool stop             # true = stop,    false = resume
   bool[8] zone_access   # true = access,  false = no access
 
-  # Zone definitions:
+  # Zone definitions (CCW):
   # zone 0 = [0,45] degree     # zone 4 = [180,225] degree
   # zone 1 = [45,90] degree    # zone 5 = [225,270] degree
   # zone 2 = [90,135] degree   # zone 6 = [270,315] degree
